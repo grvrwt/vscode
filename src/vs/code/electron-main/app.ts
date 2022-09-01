@@ -549,9 +549,6 @@ export class CodeApplication extends Disposable {
 		// Open Windows
 		const windows = appInstantiationService.invokeFunction(accessor => this.openFirstWindow(accessor, mainProcessElectronServer));
 
-		// Post Open Windows Tasks
-		appInstantiationService.invokeFunction(accessor => this.afterWindowOpen(accessor, sharedProcess));
-
 		// Tracing: Stop tracing after windows are ready if enabled
 		if (this.environmentMainService.args.trace) {
 			appInstantiationService.invokeFunction(accessor => this.stopTracingEventually(accessor, windows));
@@ -559,7 +556,10 @@ export class CodeApplication extends Disposable {
 
 		// Set lifecycle phase to `Eventually` after a short delay and when idle (min 2.5sec, max 5sec)
 		const eventuallyPhaseScheduler = this._register(new RunOnceScheduler(() => {
-			this._register(runWhenIdle(() => this.lifecycleMainService.phase = LifecycleMainPhase.Eventually, 2500));
+			this._register(runWhenIdle(() => {
+				appInstantiationService.invokeFunction(accessor => this.afterWindowOpen(accessor, sharedProcess));
+				this.lifecycleMainService.phase = LifecycleMainPhase.Eventually;
+			}, 2500));
 		}, 2500));
 		eventuallyPhaseScheduler.schedule();
 	}

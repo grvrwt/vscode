@@ -82,19 +82,19 @@ export class StorageMainService extends Disposable implements IStorageMainServic
 		(async () => {
 			await this.lifecycleMainService.when(LifecycleMainPhase.AfterWindowOpen);
 
-			this.applicationStorage.init();
+			// this.applicationStorage.init();
 		})();
 
 		this._register(this.lifecycleMainService.onWillLoadWindow(e => {
 
 			// Profile Storage: Warmup when related window with profile loads
 			if (e.window.profile) {
-				this.profileStorage(e.window.profile).init();
+				// this.profileStorage(e.window.profile).init();
 			}
 
 			// Workspace Storage: Warmup when related window with workspace loads
 			if (e.workspace) {
-				this.workspaceStorage(e.workspace).init();
+				// this.workspaceStorage(e.workspace).init();
 			}
 		}));
 
