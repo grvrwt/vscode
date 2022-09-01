@@ -11,7 +11,7 @@ import { join } from 'vs/base/common/path';
 import { isLinux } from 'vs/base/common/platform';
 import { extUriBiasedIgnorePathCase } from 'vs/base/common/resources';
 import { URI } from 'vs/base/common/uri';
-import { Promises, RimRafMode, writeFileSync } from 'vs/base/node/pfs';
+import { Promises, RimRafMode } from 'vs/base/node/pfs';
 import { IBackupMainService } from 'vs/platform/backup/electron-main/backup';
 import { IBackupWorkspacesFormat, IDeprecatedBackupWorkspacesFormat, IEmptyWindowBackupInfo, isEmptyWindowBackupInfo } from 'vs/platform/backup/node/backup';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
@@ -430,7 +430,7 @@ export class BackupMainService implements IBackupMainService {
 
 	private saveSync(): void {
 		try {
-			writeFileSync(this.workspacesJsonPath, JSON.stringify(this.serializeBackups()));
+			//writeFileSync(this.workspacesJsonPath, JSON.stringify(this.serializeBackups()));
 		} catch (error) {
 			this.logService.error(`Backup: Could not save workspaces.json: ${error.toString()}`);
 		}
@@ -438,19 +438,19 @@ export class BackupMainService implements IBackupMainService {
 
 	private async save(): Promise<void> {
 		try {
-			await Promises.writeFile(this.workspacesJsonPath, JSON.stringify(this.serializeBackups()));
+			//await Promises.writeFile(this.workspacesJsonPath, JSON.stringify(this.serializeBackups()));
 		} catch (error) {
 			this.logService.error(`Backup: Could not save workspaces.json: ${error.toString()}`);
 		}
 	}
 
-	private serializeBackups(): IBackupWorkspacesFormat {
-		return {
-			rootURIWorkspaces: this.workspaces.map(workspace => ({ id: workspace.workspace.id, configURIPath: workspace.workspace.configPath.toString(), remoteAuthority: workspace.remoteAuthority })),
-			folderWorkspaceInfos: this.folders.map(folder => ({ folderUri: folder.folderUri.toString(), remoteAuthority: folder.remoteAuthority })),
-			emptyWorkspaceInfos: this.emptyWindows
-		};
-	}
+	// private serializeBackups(): IBackupWorkspacesFormat {
+	// 	return {
+	// 		rootURIWorkspaces: this.workspaces.map(workspace => ({ id: workspace.workspace.id, configURIPath: workspace.workspace.configPath.toString(), remoteAuthority: workspace.remoteAuthority })),
+	// 		folderWorkspaceInfos: this.folders.map(folder => ({ folderUri: folder.folderUri.toString(), remoteAuthority: folder.remoteAuthority })),
+	// 		emptyWorkspaceInfos: this.emptyWindows
+	// 	};
+	// }
 
 	private getRandomEmptyWindowId(): string {
 		return (Date.now() + Math.round(Math.random() * 1000)).toString();
